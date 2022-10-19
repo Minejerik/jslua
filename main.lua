@@ -1,20 +1,20 @@
 print('first num?')
-local num1 = io.read()
+NUM1 = io.read();
 print('second num?')
-local num2 = io.read()
+NUM2 = io.read();
 print('operation?')
-local opp = io.read()
-if opp == '*' then
-print(num1*num2)
+OPP = io.read();
+if OPP == '*' then
+print(NUM1*NUM2)
  else
-	if opp == '/' then
-	print(num1/num2)
+	if OPP == '/' then
+	print(NUM1/NUM2)
 	 else
-		if opp =='+' then
-		print(num1+num2)
+		if OPP =='+' then
+		print(NUM1+NUM2)
 		 else
-			if opp =='-' then
-			print(num1-num2)
+			if OPP =='-' then
+			print(NUM1-NUM2)
 end
 end
 end

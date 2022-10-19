@@ -1,9 +1,9 @@
 print('first num?');
-local num1 = io.read();
+gbl num1 = io.read();
 print('second num?');
-local num2 = io.read();
+gbl num2 = io.read();
 print('operation?');
-local opp = io.read();
+gbl opp = io.read();
 if opp == '*'{;
 print(num1*num2);
  else;
