@@ -1,6 +1,6 @@
-filename = input('Name of jlua file?\n')
+filename = input('Name of jslua file?\n')
 outputfile = input('Name of output file?\n')
-f = open(filename,'r')
+f = open(filename, 'r')
 data = f.read()
 datalist = data.split('\n')
 f.close()
@@ -14,8 +14,8 @@ def main():
 	for i in range(0, len(datalist)):
 		temp = datalist[i]
 		temp = temp.replace(';', '')
-		temp = temp.replace('--','..')
-		temp = temp.replace('import(','require(')
+		temp = temp.replace('--', '..')
+		temp = temp.replace('import(', 'require(')
 		if temp != '':
 			if temp[0] == '~':
 				print('Commenting on replacment')
@@ -35,15 +35,15 @@ def main():
 				toadd = toadd + temp + '\n'
 			elif temp[0] == '}':
 				print('Adding End')
-				toadd =toadd + 'end \n'
+				toadd = toadd + 'end \n'
 			else:
 				toadd = toadd + temp + '\n'
 		else:
-			toadd = toadd+''
-			
+			toadd = toadd + ''
+
 	f.write(toadd)
 	f.close()
-	print('Compiled '+filename+' into '+outputfile)
+	print('Compiled ' + filename + ' into ' + outputfile)
 
 
 main()
