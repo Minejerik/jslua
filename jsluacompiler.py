@@ -1,6 +1,6 @@
 import os
-filename = input('Name of jslua file?\n')
-outputfile = input('Name of output file?\n')
+filename = 'main.jslua' #input('Name of jslua file?\n')
+outputfile = 'main.lua' #input('Name of output file?\n')
 f = open(filename, 'r')
 data = f.read()
 datalist = data.split('\n')
@@ -21,8 +21,9 @@ class bcolors:
 
 
 def erro(string, loc):
-	print(bcolors.FAIL + string + ' error on line ', loc, bcolors.ENDC)
-	exit()
+	loc +=1
+	print(bcolors.FAIL + string + '	on line ', loc, bcolors.ENDC)
+	#exit()
 
 
 def main():
@@ -36,8 +37,11 @@ def main():
 	for i in range(0, len(datalist)):
 		temp = datalist[i]
 		temp = temp.replace('--', '..')
+		temp = temp.replace('};','end')
 		temp = temp.replace('import(', 'require(')
-		if temp != '':
+		#print(temp)
+		#print(toadd)
+		if temp != '' and temp!='end':
 			if temp[0] + temp[1] == '|~':
 				print('Multi line Comment begin')
 				temp = temp.replace('|~', '--[[')
@@ -75,23 +79,28 @@ def main():
 				temp = temp.replace(';', '')
 				temp = temp.replace('{', ' ')
 				toadd = toadd + temp + '\n'
-			elif temp[0] == '}':
-				print('Adding End')
-				toadd = toadd + 'end \n'
 			else:
 				if not mcommentbegin == True and mcommentend == False:
-					if not ';' in temp:
-						erro('Expected symbol ";"', i)
-
-				temp = temp.replace(';', '')
-				toadd = toadd + temp + '\n'
+					if temp != '};':
+						if not ';' in temp:
+							if temp != 'end':
+								erro('Expected symboal ";"'+temp, i)
+					else:
+						toadd = toadd + 'end\n'
+						print('end')
+					temp = temp.replace(';', '')
+					toadd = toadd + temp + '\n'
 		else:
 			toadd = toadd + ''
+
+
+	
 	print('Checking multiline comments')
 	if mcommentbegin == True and mcommentend == False:
-		erro("Missing end comment!", mcbeginline + 1)
+		erro("Missing end comment!", mcbeginline)
 	elif mcommentend == True and mcommentbegin == False:
-		erro("Missing begining comment!", mcendline + 1)
+		erro("Missing begining comment!", mcendline)
+	toadd = toadd.replace('}','')
 	f.write(toadd)
 	f.close()
 	print('Compiled ' + filename + ' into ' + outputfile)
