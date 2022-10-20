@@ -29,6 +29,10 @@ def erro(string, loc):
 	print(bcolors.FAIL + string + '	on line ', loc, bcolors.ENDC)
 	exit()
 
+def warn(string, loc):
+	loc += 1
+	print(bcolors.WARNING+string+' on line ', loc, bcolors.ENDC)
+
 
 def main():
 	os.system('clear')
@@ -45,6 +49,10 @@ def main():
 		temp = temp.replace('import(', 'require(')
 		#print(temp)
 		#print(toadd)
+		if 'print' in temp:
+			warn('Print used, depretiated behavoiur',i)
+		if 'local' in temp:
+			warn('Local used, depretiated behavoiur',i)
 		if temp != '' and temp != 'end':
 			if temp[0] + temp[1] == '|~':
 				print('Multi line Comment begin')
@@ -61,6 +69,20 @@ def main():
 			elif temp[0] == '~':
 				print('Commenting on replacment')
 				temp = temp.replace('~', '--')
+				toadd = toadd + temp + '\n'
+			elif temp[0] + temp[1] == 'p(':
+				print('Printing p')
+				if not ';' in temp:
+					erro('Expected symbol ";"', i)
+				temp = temp.replace('p(','print(')
+				toadd = toadd + temp + '\n'
+			elif 'repeat for ' in temp:
+				if not ';' in temp:
+					erro('Expected symbol ";"', i)
+				print('repeating for')
+				temp = temp.replace('{;','').replace('repeat for ','')
+				temp = 'for i = 1,'+str(temp)+',1 do'
+				print(temp)
 				toadd = toadd + temp + '\n'
 			elif 'if' in temp:
 				print('Replacing If')
