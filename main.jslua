@@ -1,3 +1,10 @@
-repeat for 5{;
-print('beans');
+function maze(times){;
+repeat for times{;
+wi('\\');
+wi('/');
+~js.sleep(0.5);
 end;
+end;
+
+
+maze(999);

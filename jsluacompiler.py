@@ -10,7 +10,12 @@ f.close()
 f = open(outputfile, 'w')
 var = {}
 varup = {}
-
+usedsleep = False
+sleepscript = '''local clock = os.clock
+function sleep(n)
+local t0 = clock()
+while clock() - t0 <= n do end
+end\n'''
 
 class bcolors:
 	HEADER = '\033[95m'
@@ -35,6 +40,7 @@ def warn(string, loc):
 
 
 def main():
+	usedsleep = False
 	os.system('clear')
 	toadd = ''
 	print('Running Compiler')
@@ -47,8 +53,6 @@ def main():
 		temp = temp.replace('--', '..')
 		temp = temp.replace('};', 'end')
 		temp = temp.replace('import(', 'require(')
-		#print(temp)
-		#print(toadd)
 		if 'print' in temp:
 			warn('Print used, depretiated behavoiur',i)
 		if 'local' in temp:
@@ -70,20 +74,39 @@ def main():
 				print('Commenting on replacment')
 				temp = temp.replace('~', '--')
 				toadd = toadd + temp + '\n'
-			elif temp[0] + temp[1] == 'p(':
+			elif 'pr(' in temp:
 				print('Printing p')
 				if not ';' in temp:
 					erro('Expected symbol ";"', i)
-				temp = temp.replace('p(','print(')
+				temp = temp.replace('pr(','print(').replace(';','')
 				toadd = toadd + temp + '\n'
 			elif 'repeat for ' in temp:
 				if not ';' in temp:
 					erro('Expected symbol ";"', i)
 				print('repeating for')
 				temp = temp.replace('{;','').replace('repeat for ','')
+				if temp == '' or temp ==' ':
+					erro('Requires Arguments',i)
 				temp = 'for i = 1,'+str(temp)+',1 do'
-				print(temp)
 				toadd = toadd + temp + '\n'
+			elif 'read(' in temp:
+				if not ';' in temp:
+					erro('Expected symbol ";"', i)
+				temp = temp.replace('read(','io.read(').replace(';','')
+				toadd = toadd +temp+'\n'
+			elif 'wi(' in temp:
+				print('writing')
+				if not ';' in temp:
+					erro('Expected symbol ";"', i)
+				temp = temp.replace('wi(','io.write(').replace(';','')
+				toadd = toadd +temp+'\n'
+			elif 'js.sleep' in temp:
+				if not ';' in temp:
+					erro('Expected symbol ";"', i)
+				print('sleeping peacfully')
+				usedsleep = True
+				temp = temp.replace('js.sleep(','sleep(').replace(';','')
+				toadd = toadd +temp +'\n'
 			elif 'if' in temp:
 				print('Replacing If')
 				if not ';' in temp:
@@ -109,7 +132,7 @@ def main():
 				print('local localized')
 				if not ';' in temp:
 					erro('Expected symbol ";"', i)
-				temp = temp.replace('lcl', 'local')
+				temp = temp.replace('lcl', 'local').replace(';','')
 				toadd = toadd + temp + '\n'
 			elif 'gbl' in temp:
 				if not ';' in temp:
@@ -144,7 +167,6 @@ def main():
 					toadd = toadd + temp + '\n'
 		else:
 			toadd = toadd + ''
-
 	print('Checking multiline comments')
 	if mcommentbegin == True and mcommentend == False:
 		erro("Missing end comment!", mcbeginline)
@@ -155,7 +177,11 @@ def main():
 		print('Replacing ' + var[i] + ' with ' + varup[i])
 		toadd = toadd.replace(var[i], varup[i])
 	toadd = toadd.replace('[];','{}')
+	f.write('--COMPILED WITH MINEJERIK JS LUA COMPILER\n')
+	if usedsleep == True:
+		f.write(sleepscript)
 	f.write(toadd)
+	f.write('--COMPILED WITH MINEJERIK JS LUA COMPILER')
 	f.close()
 	print(bcolors.OKGREEN + 'Compiled ' + filename + ' into ' + outputfile +
 	      bcolors.ENDC)
