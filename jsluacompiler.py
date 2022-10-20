@@ -58,22 +58,20 @@ def main():
 		if 'local' in temp:
 			warn('Local used, depretiated behavoiur',i)
 		if temp != '' and temp != 'end':
-			if temp[0] + temp[1] == '|~':
+			if '|~' in temp:
 				print('Multi line Comment begin')
-				temp = temp.replace('|~', '--[[')
-				toadd = toadd + temp + '\n'
+				toadd = toadd
 				mcommentbegin = True
 				mcbeginline = i
-			elif temp[0] + temp[1] == '~|':
+			elif '~|' in temp:
 				print('Multi line comment end')
 				temp = temp.replace('~|', '--]]')
-				toadd = toadd + temp + '\n'
+				toadd = toadd
 				mcommentend = True
 				mcendline = i
 			elif temp[0] == '~':
 				print('Commenting on replacment')
-				temp = temp.replace('~', '--')
-				toadd = toadd + temp + '\n'
+				toadd = toadd
 			elif 'pr(' in temp:
 				print('Printing p')
 				if not ';' in temp:
