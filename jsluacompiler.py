@@ -51,12 +51,9 @@ def main():
 	for i in range(0, len(datalist)):
 		temp = datalist[i]
 		temp = temp.replace('--', '..')
-		temp = temp.replace('};', 'end')
+		temp = temp.replace('};', 'end;')
 		temp = temp.replace('import(', 'require(')
-		if 'print' in temp:
-			warn('Print used, depretiated behavoiur',i)
-		if 'local' in temp:
-			warn('Local used, depretiated behavoiur',i)
+		temp = temp.replace('read(','io.read(').replace('pr(','print(').replace('wi(','io.write(').replace('lcl ','local ')
 		if temp != '' and temp != 'end':
 			if '|~' in temp:
 				print('Multi line Comment begin')
@@ -65,19 +62,12 @@ def main():
 				mcbeginline = i
 			elif '~|' in temp:
 				print('Multi line comment end')
-				temp = temp.replace('~|', '--]]')
 				toadd = toadd
 				mcommentend = True
 				mcendline = i
 			elif temp[0] == '~':
 				print('Commenting on replacment')
 				toadd = toadd
-			elif 'pr(' in temp:
-				print('Printing p')
-				if not ';' in temp:
-					erro('Expected symbol ";"', i)
-				temp = temp.replace('pr(','print(').replace(';','')
-				toadd = toadd + temp + '\n'
 			elif 'repeat for ' in temp:
 				if not ';' in temp:
 					erro('Expected symbol ";"', i)
@@ -87,17 +77,6 @@ def main():
 					erro('Requires Arguments',i)
 				temp = 'for i = 1,'+str(temp)+',1 do'
 				toadd = toadd + temp + '\n'
-			elif 'read(' in temp:
-				if not ';' in temp:
-					erro('Expected symbol ";"', i)
-				temp = temp.replace('read(','io.read(').replace(';','')
-				toadd = toadd +temp+'\n'
-			elif 'wi(' in temp:
-				print('writing')
-				if not ';' in temp:
-					erro('Expected symbol ";"', i)
-				temp = temp.replace('wi(','io.write(').replace(';','')
-				toadd = toadd +temp+'\n'
 			elif 'js.sleep' in temp:
 				if not ';' in temp:
 					erro('Expected symbol ";"', i)
@@ -126,12 +105,6 @@ def main():
 				temp = temp.replace(';', '')
 				temp = temp.replace('{', ' ')
 				toadd = toadd + temp + '\n'
-			elif 'lcl' in temp:
-				print('local localized')
-				if not ';' in temp:
-					erro('Expected symbol ";"', i)
-				temp = temp.replace('lcl', 'local').replace(';','')
-				toadd = toadd + temp + '\n'
 			elif 'gbl' in temp:
 				if not ';' in temp:
 					erro('Expected symbol ";"', i)
@@ -140,6 +113,7 @@ def main():
 				templet = temp[0:int(templet)]
 				var[len(var) + 1] = templet
 				varup[len(varup) + 1] = templet.upper()
+				temp = temp.replace(';','')
 				toadd = toadd + temp + '\n'
 				print(templet + " variable indexed")
 			elif 'tbl' in temp:
