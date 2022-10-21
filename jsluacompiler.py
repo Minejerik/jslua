@@ -53,7 +53,11 @@ def main():
 		temp = temp.replace('--', '..')
 		temp = temp.replace('};', 'end;')
 		temp = temp.replace('import(', 'require(')
-		temp = temp.replace('read(','io.read(').replace('pr(','print(').replace('wi(','io.write(').replace('lcl ','local ')
+		temp = temp.replace('read(','io.read(').replace('pr(','print(').replace('wi(','io.write(').replace('lcl ','local ').replace('exit(','os.exit(')
+		trueline = i
+		if trueline % 20 == 0:
+			toadd = toadd + '--COMPILED USING MINEJERIK JSLUA COMPILER\n'
+			print('adding signature')
 		if temp != '' and temp != 'end':
 			if '|~' in temp:
 				print('Multi line Comment begin')
@@ -149,11 +153,9 @@ def main():
 		print('Replacing ' + var[i] + ' with ' + varup[i])
 		toadd = toadd.replace(var[i], varup[i])
 	toadd = toadd.replace('[];','{}')
-	f.write('--COMPILED WITH MINEJERIK JS LUA COMPILER\n')
 	if usedsleep == True:
 		f.write(sleepscript)
 	f.write(toadd)
-	f.write('--COMPILED WITH MINEJERIK JS LUA COMPILER')
 	f.close()
 	print(bcolors.OKGREEN + 'Compiled ' + filename + ' into ' + outputfile +
 	      bcolors.ENDC)
