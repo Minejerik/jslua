@@ -1,0 +1,175 @@
+lcl input;
+lcl money=100;
+lcl health=150;
+lcl loss;
+lcl strength=25;
+lcl food=10;
+lcl name;
+lcl drip=0;
+lcl car=false;
+lcl motorcycle=false;
+lcl clothes=false;
+lcl house=false;
+lcl version = 1.0;
+
+
+
+wi("Time to play!\n");
+wi("What is your name?\n");
+name = read() ;
+pr("Hello",name,"!");
+
+
+function main_loop();
+wi("What would you like to do?\n");
+input = read();
+
+if input == "work"{;
+	money=money+25;
+  pr("Money =", (money));
+};
+if input == "eat"{;
+  if food>0{;
+  health=health+5;
+  food=food-1;
+  pr("Health =",(health));
+  pr("Food Left =",(food))  ;
+  else;
+  pr("You are out of food buy some!");
+ };
+};
+if input=="fight"{;
+    loss=math.random(0,30);
+    gain=math.random(1,strength/2);
+	health=health-loss;
+  money=money+gain;
+    pr("You Lost",(loss),"Health!");
+    pr("You Gained",(gain),"Dollars!");
+    pr("Health=",(health));
+    pr("Money =",(money));
+};
+if input=="info"{;
+pr("Health=",(health));
+pr("Money =",(money));
+pr("Strength =",(strength));
+pr("Food Left =",(food)) ;
+pr("Your Drippines =",(drip)) ;
+};
+
+if input== "train"{;
+  strength=strength+5;
+  pr("Strength =",(strength));
+};
+
+
+
+if input=="buy_food"{;
+food=food+1;
+money=money-5;
+pr("Food Owned =",(food));
+pr("Money =",(money));
+};
+
+~car stuff
+if input=="buy_car"{;
+  if money>=250 and car==false{;
+	car=true;
+  money=money-250;
+  drip=drip+250;
+  pr("Car Now Owned");
+        else;
+        if money<250{;
+	      pr( 250-money,"More Money Required!");
+       };
+        if car==true{;
+	      pr("You already own a car!");
+       };
+};
+};
+~motorcycle stuff
+if input=="buy_motorcycle"{;
+  if money>=250 and motorcycle==false{;
+	motorcycle=true;
+  money=money-250;
+  drip=drip+250;
+  pr("Motorcycle Now Owned");
+        else;
+        if money<250{;
+	      pr( 250-money,"More Money Required!");
+       };
+        if motorcycle==true{;
+	      pr("You already own a motorcycle!");
+       };
+};
+};
+~clothes stuff
+if input=="buy_clothes"{;
+  if money>=100 and clothes==false{;
+	clothes=true;
+  money=money-100;
+  drip=drip+100;
+  pr("Clothes Now Owned");
+        else;
+        if money<100{;
+	      pr( 100-money,"More Money Required!");
+       };
+        if clothes==true{;
+	      pr("You already own Clothes!");
+       };
+};
+};
+~house stuff
+if input=="buy_house"{;
+  if money>=400 and house==false{;
+	house=true;
+  money=money-400;
+  drip=drip+400;
+  pr("House Now Owned");
+        else;
+        if money<400{;
+	      pr( 400-money,"More Money Required!");
+       };
+        if house==true{;
+	      pr("You already own a house!");
+       };
+};
+}; 
+if input=="help"{;
+pr("info - Gets your stats");
+pr("help - brings this up");
+pr("work - allows you to work");
+pr("buy_food - buy some food");
+pr("eat - eat the food");
+pr("fight - fight someone");
+pr("train - train to earn more money per fight");
+pr("buy_car - you buy a car $250");
+pr("buy_motorcycle - you buy a motorcycle $250");
+pr("buy_clothes - you buy some clothes $100");
+pr("buy_house -  you buy a house $400");
+pr("buy motorcycle/car/clothes/a house lets you get drippy enough to win");
+pr("Version =",(version));
+};
+
+
+
+
+
+
+
+
+if drip >= 1000{;
+	pr("You Win! You Became Drippy!");
+  exit();
+};
+
+if health == 0{;
+	pr("You Died! You Lost All Your Health!");
+  exit();
+};
+
+
+
+main_loop();
+};
+
+main_loop();
