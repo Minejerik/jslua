@@ -10,7 +10,7 @@ def find_files(filename, search_path):
 
 def loading(i):
 	porcent = i/len(datalist)*100
-	os.system('clear')
+	os.system('cls')
 	print (int(porcent),'Percent Done')
 
 filename = 'main.jslua' #input('Name of jslua file?\n')
