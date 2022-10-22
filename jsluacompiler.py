@@ -47,6 +47,11 @@ def erro(string,line,loc):
 	print(bcolors.FAIL +string + '	on line ', loc,'\n'+line+' <--', bcolors.ENDC)
 	exit()
 
+def errold(string,loc):
+	loc += 1
+	print(bcolors.FAIL +string + '	on line ', loc, bcolors.ENDC)
+	exit()
+
 def warn(string, loc):
 	loc += 1
 	print(bcolors.WARNING+string+' on line ', loc, bcolors.ENDC)
@@ -86,7 +91,7 @@ def main():
 					erro('Expected symbol ";"',temp, i)
 				temp = temp.replace('{;','').replace('repeat for ','')
 				if temp == '' or temp ==' ':
-					erro('Requires Arguments',i)
+					errold('Requires Arguments',i)
 				temp = 'for i = 1,'+str(temp)+',1 do'
 				toadd = toadd + temp + '\n'
 			elif 'js.sleep' in temp:
@@ -160,9 +165,9 @@ def main():
 		else:
 			toadd = toadd + ''
 	if mcommentbegin == True and mcommentend == False:
-		erro("Missing end comment!", mcbeginline)
+		errold("Missing end comment!", mcbeginline)
 	elif mcommentend == True and mcommentbegin == False:
-		erro("Missing begining comment!", mcendline)
+		errold("Missing begining comment!", mcendline)
 	toadd = toadd.replace('}', '')
 	for i in range(1, len(var) + 1):
 		print('Replacing ' + var[i] + ' with ' + varup[i])
