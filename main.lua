@@ -1,156 +1,108 @@
 --COMPILED USING MINEJERIK JSLUA COMPILER
-local input
-local money=100
-local health=150
-local loss
-local strength=25
-local food=10
-local name
-local drip=0
-local car=false
-local motorcycle=false
-local clothes=false
-local house=false
-local version = 1.0
-io.write("Time to play!\n")
-io.write("What is your name?\n")
-name = io.read() 
-print("Hello",name,"!")
+local cmd = require('otherstuff.commands')
+local work = require('otherstuff.work')
+local fight= require('otherstuff.fight')
+local buy = require('otherstuff.buy')
+local food = require('otherstuff.food')
+local sleepcount = 15
+MorDays = 30
+Mordayleft = 60
+House = false
+C = require('otherstuff.colors')
+VERSION = "1.10.3"
+Cycles = 0
+Taxesammount = 0
+math.randomseed(os.time())
+local temp = math.random(1,5)
+Allergie = Allergies[temp]
+Energy = 150
+Money = 100
+RandomTemp = 0
 --COMPILED USING MINEJERIK JSLUA COMPILER
-function main_loop()
-io.write("What would you like to do?\n")
-input = io.read()
-if input == "work" then
-	money=money+25
-  print("Money =", (money))
+print(C.red..'You are allergic to the '..Allergie.." food group"..C.none)
+function MainLoop()
+write(C.yellow.."What Would you like to do?\n"..C.none)
+Input = string.lower(io.read())
+if Input == "sleep" then
+if sleepcount >= 15 then
+cmd.sleep()
+sleepcount = 0
+else
+print(C.red..'You arent tired you cant sleep!'..C.none)
 end
-if input == "eat" then
-  if food>0 then
-  health=health+5
-  food=food-1
-  print("Health =",(health))
-  print("Food Left =",(food))  
-  else
-  print("You are out of food buy some!")
- end
 end
+if Input == "work" then
+work.work()
+end
+if Input == "eat" then
 --COMPILED USING MINEJERIK JSLUA COMPILER
-if input=="fight" then
-    loss=math.random(0,30)
-    gain=math.random(1,strength/2)
-	health=health-loss
-  money=money+gain
-    print("You Lost",(loss),"Health!")
-    print("You Gained",(gain),"Dollars!")
-    print("Health=",(health))
-    print("Money =",(money))
+food.eat()
 end
-if input=="info" then
-print("Health=",(health))
-print("Money =",(money))
-print("Strength =",(strength))
-print("Food Left =",(food)) 
-print("Your Drippines =",(drip)) 
+if Input == "cook" then
+food.cook()
 end
-if input== "train" then
-  strength=strength+5
+if Input == "list_food" then
+food.list()
+end
+if Input == "fight" then
+fight.flight()
+end
+if Input == 'pay_rent' then
+if Money>50 then
+Mordayleft = Mordayleft + MorDays
+print(C.green..'Paid Rent')
+print('Good for another '..Mordayleft..' Cycles!'..C.none)
 --COMPILED USING MINEJERIK JSLUA COMPILER
-  print("Strength =",(strength))
+print(C.red..'You paid 50 dollars'..C.none)
+Money = Money - 50
+else
+print(C.red.."Not Enough Money!"..C.none)
 end
-if input=="buy_food" then
-food=food+1
-money=money-5
-print("Food Owned =",(food))
-print("Money =",(money))
 end
-if input=="buy_car" then
-  if money>=250 and car==false then
-	car=true
-  money=money-250
-  drip=drip+250
-  print("Car Now Owned")
-        else
+if Input == "buy_food" then
+buy.food()
+end
+if Input == "exit" then
+print("exiting!")
+os.os.exit()
+end
+Cycles = Cycles + 1
+if Mordayleft>0 then Mordayleft = Mordayleft - 1 end
 --COMPILED USING MINEJERIK JSLUA COMPILER
-        if money<250 then
-	      print( 250-money,"More Money Required!")
-       end
-        if car==true then
-	      print("You already own a car!")
-       end
+if Cycles % 60 == 0 then
+print(C.red..'You paid your taxes!')
+if Money-50 > 15 then temp = math.random(15,Money-50) else temp = 5 end
+if House == false then temp = temp/2 end
+Taxesammount = Taxesammount +temp
+print('You Paid '..temp..' Dollars'..C.none)
+Money = Money - temp
 end
+if Money < 0 then
+write('\n')
+print(C.red..'Your In Debt!')
+print('You Lose the game!'..C.none)
+print('')
+cmd.info()
+os.os.exit()
 end
-if input=="buy_motorcycle" then
-  if money>=250 and motorcycle==false then
-	motorcycle=true
-  money=money-250
-  drip=drip+250
-  print("Motorcycle Now Owned")
-        else
-        if money<250 then
-	      print( 250-money,"More Money Required!")
-       end
-        if motorcycle==true then
+if Mordayleft==0 then
+if House == true then
 --COMPILED USING MINEJERIK JSLUA COMPILER
-	      print("You already own a motorcycle!")
-       end
+House = false
+print(C.red.."You lost your house!")
+print('Taxes Cut in half and ability to cook removed!')
+print('Pay Your rent for 50 dollars!'..C.none)
 end
+else
+House = true
 end
-if input=="buy_clothes" then
-  if money>=100 and clothes==false then
-	clothes=true
-  money=money-100
-  drip=drip+100
-  print("Clothes Now Owned")
-        else
-        if money<100 then
-	      print( 100-money,"More Money Required!")
-       end
-        if clothes==true then
-	      print("You already own Clothes!")
-       end
+if Input == "info" then
+cmd.info()
 end
+temp = math.random(-123123123,123123)
+temp =os.time()+temp
+math.randomseed(temp)
+sleepcount = sleepcount +1
+MainLoop()
 end
---COMPILED USING MINEJERIK JSLUA COMPILER
-if input=="buy_house" then
-  if money>=400 and house==false then
-	house=true
-  money=money-400
-  drip=drip+400
-  print("House Now Owned")
-        else
-        if money<400 then
-	      print( 400-money,"More Money Required!")
-       end
-        if house==true then
-	      print("You already own a house!")
-       end
-end
-end 
-if input=="help" then
-print("info - Gets your stats")
-print("help - brings this up")
-print("work - allows you to work")
---COMPILED USING MINEJERIK JSLUA COMPILER
-print("buy_food - buy some food")
-print("eat - eat the food")
-print("fight - fight someone")
-print("train - train to earn more money per fight")
-print("buy_car - you buy a car $250")
-print("buy_motorcycle - you buy a motorcycle $250")
-print("buy_clothes - you buy some clothes $100")
-print("buy_house -  you buy a house $400")
-print("buy motorcycle/car/clothes/a house lets you get drippy enough to win")
-print("Version =",(version))
-end
-if drip >= 1000 then
---COMPILED USING MINEJERIK JSLUA COMPILER
-	print("You Win! You Became Drippy!")
-  os.exit()
-end
-if health == 0 then
-	print("You Died! You Lost All Your Health!")
-  os.exit()
-end
-main_loop()
-end
-main_loop()
+MainLoop()

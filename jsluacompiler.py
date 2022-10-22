@@ -1,8 +1,20 @@
 import os
-import time
 
-filename = 'main.jslua'  #input('Name of jslua file?\n')
-outputfile = 'main.lua'  #input('Name of output file?\n')
+def find_files(filename, search_path):
+   result = []
+
+   for root, dir, files in os.walk(search_path):
+      if filename in files:
+         result.append(os.path.join(root, filename))
+   return result
+
+def loading(i):
+	porcent = i/len(datalist)*100
+	os.system('clear')
+	print (int(porcent),'Percent Done')
+
+filename = 'main.jslua' #input('Name of jslua file?\n')
+outputfile = 'main.lua' #input('Name of output file?\n')
 f = open(filename, 'r')
 data = f.read()
 datalist = data.split('\n')
@@ -10,6 +22,7 @@ f.close()
 f = open(outputfile, 'w')
 var = {}
 varup = {}
+printlater = {}
 usedsleep = False
 sleepscript = '''local clock = os.clock
 function sleep(n)
@@ -29,9 +42,9 @@ class bcolors:
 	UNDERLINE = '\033[4m'
 
 
-def erro(string, loc):
+def erro(string,line,loc):
 	loc += 1
-	print(bcolors.FAIL + string + '	on line ', loc, bcolors.ENDC)
+	print(bcolors.FAIL +string + '	on line ', loc,'\n'+line+' <--', bcolors.ENDC)
 	exit()
 
 def warn(string, loc):
@@ -52,30 +65,25 @@ def main():
 		temp = datalist[i]
 		temp = temp.replace('--', '..')
 		temp = temp.replace('};', 'end;')
-		temp = temp.replace('import(', 'require(')
-		temp = temp.replace('read(','io.read(').replace('pr(','print(').replace('wi(','io.write(').replace('lcl ','local ').replace('exit(','os.exit(')
+		temp = temp.replace('read(','io.read(').replace('pr(','print(').replace('wi(','io.write(').replace('lcl ','local ').replace('exit(','os.exit(').replace('ran(','math.random(')
+		loading(i+1)
 		trueline = i
 		if trueline % 20 == 0:
 			toadd = toadd + '--COMPILED USING MINEJERIK JSLUA COMPILER\n'
-			print('adding signature')
 		if temp != '' and temp != 'end':
 			if '|~' in temp:
-				print('Multi line Comment begin')
 				toadd = toadd
 				mcommentbegin = True
 				mcbeginline = i
 			elif '~|' in temp:
-				print('Multi line comment end')
 				toadd = toadd
 				mcommentend = True
 				mcendline = i
 			elif temp[0] == '~':
-				print('Commenting on replacment')
 				toadd = toadd
 			elif 'repeat for ' in temp:
 				if not ';' in temp:
-					erro('Expected symbol ";"', i)
-				print('repeating for')
+					erro('Expected symbol ";"',temp, i)
 				temp = temp.replace('{;','').replace('repeat for ','')
 				if temp == '' or temp ==' ':
 					erro('Requires Arguments',i)
@@ -83,35 +91,31 @@ def main():
 				toadd = toadd + temp + '\n'
 			elif 'js.sleep' in temp:
 				if not ';' in temp:
-					erro('Expected symbol ";"', i)
-				print('sleeping peacfully')
+					erro('Expected symbol ";"',temp, i)
 				usedsleep = True
 				temp = temp.replace('js.sleep(','sleep(').replace(';','')
 				toadd = toadd +temp +'\n'
 			elif 'if' in temp:
-				print('Replacing If')
 				if not ';' in temp:
-					erro('Expected symbol ";"', i)
+					erro('Expected symbol ";"',temp, i)
 				temp = temp.replace(';', '')
 				temp = temp.replace('{', ' then')
 				toadd = toadd + temp + '\n'
 			elif 'while' in temp:
-				print('While Looping')
 				if not ';' in temp:
-					erro('Expected symbol ";"', i)
+					erro('Expected symbol ";"',temp, i)
 				temp = temp.replace(';', '')
 				temp = temp.replace('{', '')
 				toadd = toadd + temp + ' do \n'
 			elif 'function' in temp:
-				print('Function Replaced')
 				if not ';' in temp:
-					erro('Expected symbol ";"', i)
+					erro('Expected symbol ";"',temp, i)
 				temp = temp.replace(';', '')
 				temp = temp.replace('{', ' ')
 				toadd = toadd + temp + '\n'
 			elif 'gbl' in temp:
 				if not ';' in temp:
-					erro('Expected symbol ";"', i)
+					erro('Expected symbol ";"',temp, i)
 				temp = temp.replace('gbl ', '')
 				templet = temp.find(' ', 0, len(temp))
 				templet = temp[0:int(templet)]
@@ -122,7 +126,7 @@ def main():
 				print(templet + " variable indexed")
 			elif 'tbl' in temp:
 				if not ';' in temp:
-					erro('Expected symbol ";"', i)
+					erro('Expected symbol ";"',temp, i)
 				temp = temp.replace('tbl ', '')
 				templet = temp.find(' ', 0, len(temp))
 				templet = temp[0:int(templet)]
@@ -130,12 +134,24 @@ def main():
 				varup[len(varup) + 1] = templet.upper()
 				toadd = toadd + temp + '}\n'
 				print(templet + " variable indexed")
+			elif 'import(' in temp:
+				if not ';' in temp:
+					erro('Expected symbol ";"',temp, i)
+				tempe = temp.replace('import(','').replace(')','').replace('"','').replace("'",'').replace(';','')
+				tempe = tempe + '.jslua'
+				file = find_files(tempe,os.getcwd())
+				if file != []:
+					printlater[i] = 'Remember to compile '+tempe
+				if file == []:
+					printlater[i] = tempe+' not found at line '+str(i)
+				temp = temp.replace('import(','require(').replace(';','')
+				toadd = toadd + temp +'\n'
 			else:
 				if not mcommentbegin == True and mcommentend == False:
 					if temp != '};':
 						if not ';' in temp:
 							if temp != 'end':
-								erro('Expected symbol ";"', i)
+								erro('Expected symbol ";"',temp, i)
 					else:
 						toadd = toadd + 'end\n'
 						print('end')
@@ -143,7 +159,6 @@ def main():
 					toadd = toadd + temp + '\n'
 		else:
 			toadd = toadd + ''
-	print('Checking multiline comments')
 	if mcommentbegin == True and mcommentend == False:
 		erro("Missing end comment!", mcbeginline)
 	elif mcommentend == True and mcommentbegin == False:
@@ -153,13 +168,16 @@ def main():
 		print('Replacing ' + var[i] + ' with ' + varup[i])
 		toadd = toadd.replace(var[i], varup[i])
 	toadd = toadd.replace('[];','{}')
+	if len(printlater)>0:
+		for i in range(1,len(printlater)):
+			print(printlater[i])
 	if usedsleep == True:
 		f.write(sleepscript)
 	f.write(toadd)
 	f.close()
 	print(bcolors.OKGREEN + 'Compiled ' + filename + ' into ' + outputfile +
 	      bcolors.ENDC)
-	print('quitting in 5')
-	time.sleep(5)
+	print('Press enter to quit!')
+	input()
 	exit()
 main()

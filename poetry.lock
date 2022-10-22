@@ -245,6 +245,14 @@ testing = ["pytest-benchmark", "pytest"]
 dev = ["tox", "pre-commit"]
 
 [[package]]
+name = "progress"
+version = "1.6"
+description = "Easy to use progress bars"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pyflakes"
 version = "2.5.0"
 description = "passive checker of Python programs"
@@ -478,7 +486,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.0,<3.9"
-content-hash = "f328c469a46d9cb95c79b10c69318f07ccca3f40cc6eb43ef51c87ad2ff1879b"
+content-hash = "ea8edd7ed7be9b9bde2f6cd017699920649278a0135a8a9c53bb4957476c1658"
 
 [metadata.files]
 aiohttp = []
@@ -503,6 +511,7 @@ numpy = []
 packaging = []
 parso = []
 pluggy = []
+progress = []
 pyflakes = []
 pyparsing = []
 python-lsp-jsonrpc = []

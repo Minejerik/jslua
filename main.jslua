@@ -1,175 +1,120 @@
-lcl input;
-lcl money=100;
-lcl health=150;
-lcl loss;
-lcl strength=25;
-lcl food=10;
-lcl name;
-lcl drip=0;
-lcl car=false;
-lcl motorcycle=false;
-lcl clothes=false;
-lcl house=false;
-lcl version = 1.0;
+~start Vars
+lcl cmd = import('otherstuff.commands');
+lcl work = import('otherstuff.work');
+lcl fight= import('otherstuff.fight');
+lcl buy = import('otherstuff.buy');
+lcl food = import('otherstuff.food');
+lcl sleepcount = 15;
+MorDays = 30;
+Mordayleft = 60;
+House = false;
+C = import('otherstuff.colors');
+VERSION = "1.10.3";
+Cycles = 0;
+Taxesammount = 0;
+math.randomseed(os.time());
+lcl temp = math.random(1,5);
+Allergie = Allergies[temp];
+Energy = 150;
+Money = 100;
+RandomTemp = 0;
+pr(C.red--'You are allergic to the '--Allergie--" food group"--C.none);
 
+function MainLoop();
+write(C.yellow--"What Would you like to do?\n"--C.none);
+Input = string.lower(read());
 
+if Input == "sleep"{;
+if sleepcount >= 15{;
+cmd.sleep();
+sleepcount = 0;
+else;
+pr(C.red--'You arent tired you cant sleep!'--C.none);
+end;
+end;
 
-wi("Time to play!\n");
-wi("What is your name?\n");
-name = read() ;
-pr("Hello",name,"!");
+if Input == "work"{;
+work.work();
+end;
 
+if Input == "eat"{;
+food.eat();
+end;
 
-function main_loop();
-wi("What would you like to do?\n");
-input = read();
+if Input == "cook"{;
+food.cook();
+end;
 
-if input == "work"{;
-	money=money+25;
-  pr("Money =", (money));
-};
-if input == "eat"{;
-  if food>0{;
-  health=health+5;
-  food=food-1;
-  pr("Health =",(health));
-  pr("Food Left =",(food))  ;
-  else;
-  pr("You are out of food buy some!");
- };
-};
-if input=="fight"{;
-    loss=math.random(0,30);
-    gain=math.random(1,strength/2);
-	health=health-loss;
-  money=money+gain;
-    pr("You Lost",(loss),"Health!");
-    pr("You Gained",(gain),"Dollars!");
-    pr("Health=",(health));
-    pr("Money =",(money));
-};
-if input=="info"{;
-pr("Health=",(health));
-pr("Money =",(money));
-pr("Strength =",(strength));
-pr("Food Left =",(food)) ;
-pr("Your Drippines =",(drip)) ;
-};
+if Input == "list_food"{;
+food.list();
+end;
 
-if input== "train"{;
-  strength=strength+5;
-  pr("Strength =",(strength));
-};
+if Input == "fight"{;
+fight.flight();
+end;
 
+if Input == 'pay_rent'{;
+if Money>50{;
+Mordayleft = Mordayleft + MorDays;
+pr(C.green--'Paid Rent');
+pr('Good for another '--Mordayleft--' Cycles!'--C.none);
+pr(C.red--'You paid 50 dollars'--C.none);
+Money = Money - 50;
+else;
+pr(C.red--"Not Enough Money!"--C.none);
+end;
+end;
 
+if Input == "buy_food"{;
+buy.food();
+end;
 
-if input=="buy_food"{;
-food=food+1;
-money=money-5;
-pr("Food Owned =",(food));
-pr("Money =",(money));
-};
+if Input == "exit"{;
+pr("exiting!");
+os.exit();
+end;
 
-~car stuff
-if input=="buy_car"{;
-  if money>=250 and car==false{;
-	car=true;
-  money=money-250;
-  drip=drip+250;
-  pr("Car Now Owned");
-        else;
-        if money<250{;
-	      pr( 250-money,"More Money Required!");
-       };
-        if car==true{;
-	      pr("You already own a car!");
-       };
-};
-};
-~motorcycle stuff
-if input=="buy_motorcycle"{;
-  if money>=250 and motorcycle==false{;
-	motorcycle=true;
-  money=money-250;
-  drip=drip+250;
-  pr("Motorcycle Now Owned");
-        else;
-        if money<250{;
-	      pr( 250-money,"More Money Required!");
-       };
-        if motorcycle==true{;
-	      pr("You already own a motorcycle!");
-       };
-};
-};
-~clothes stuff
-if input=="buy_clothes"{;
-  if money>=100 and clothes==false{;
-	clothes=true;
-  money=money-100;
-  drip=drip+100;
-  pr("Clothes Now Owned");
-        else;
-        if money<100{;
-	      pr( 100-money,"More Money Required!");
-       };
-        if clothes==true{;
-	      pr("You already own Clothes!");
-       };
-};
-};
-~house stuff
-if input=="buy_house"{;
-  if money>=400 and house==false{;
-	house=true;
-  money=money-400;
-  drip=drip+400;
-  pr("House Now Owned");
-        else;
-        if money<400{;
-	      pr( 400-money,"More Money Required!");
-       };
-        if house==true{;
-	      pr("You already own a house!");
-       };
-};
-}; 
-if input=="help"{;
-pr("info - Gets your stats");
-pr("help - brings this up");
-pr("work - allows you to work");
-pr("buy_food - buy some food");
-pr("eat - eat the food");
-pr("fight - fight someone");
-pr("train - train to earn more money per fight");
-pr("buy_car - you buy a car $250");
-pr("buy_motorcycle - you buy a motorcycle $250");
-pr("buy_clothes - you buy some clothes $100");
-pr("buy_house -  you buy a house $400");
-pr("buy motorcycle/car/clothes/a house lets you get drippy enough to win");
-pr("Version =",(version));
-};
+Cycles = Cycles + 1;
 
+if Mordayleft>0{; Mordayleft = Mordayleft - 1 end;
 
+if Cycles % 60 == 0{;
+pr(C.red--'You paid your taxes!');
+if Money-50 > 15 then temp = math.random(15,Money-50) else temp = 5 end;
+if House == false then temp = temp/2 end;
+Taxesammount = Taxesammount +temp;
+pr('You Paid '--temp--' Dollars'--C.none);
+Money = Money - temp;
+end;
 
+if Money < 0{;
+write('\n');
+pr(C.red--'Your In Debt!');
+pr('You Lose the game!'--C.none);
+pr('');
+cmd.info();
+os.exit();
+end;
 
+if Mordayleft==0{;
+if House == true{;
+House = false;
+pr(C.red--"You lost your house!");
+pr('Taxes Cut in half and ability to cook removed!');
+pr('Pay Your rent for 50 dollars!'--C.none);
+end;
+else;
+House = true;
+end;
 
+if Input == "info"{;
+cmd.info();
+end;
 
-
-
-if drip >= 1000{;
-	pr("You Win! You Became Drippy!");
-  exit();
-};
-
-if health == 0{;
-	pr("You Died! You Lost All Your Health!");
-  exit();
-};
-
-
-
-main_loop();
-};
-
-main_loop();
+temp = math.random(-123123123,123123);
+temp =os.time()+temp;
+math.randomseed(temp);
+sleepcount = sleepcount +1;
+MainLoop();
+end;
+MainLoop();
