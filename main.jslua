@@ -1,120 +1,19 @@
-~start Vars
-lcl cmd = import('otherstuff.commands');
-lcl work = import('otherstuff.work');
-lcl fight= import('otherstuff.fight');
-lcl buy = import('otherstuff.buy');
-lcl food = import('otherstuff.food');
-lcl sleepcount = 15;
-MorDays = 30;
-Mordayleft = 60;
-House = false;
-C = import('otherstuff.colors');
-VERSION = "1.10.3";
-Cycles = 0;
-Taxesammount = 0;
-math.randomseed(os.time());
-lcl temp = math.random(1,5);
-Allergie = Allergies[temp];
-Energy = 150;
-Money = 100;
-RandomTemp = 0;
-pr(C.red--'You are allergic to the '--Allergie--" food group"--C.none);
+gbl input = '';
+gbl money = 10;
 
-function MainLoop();
-write(C.yellow--"What Would you like to do?\n"--C.none);
-Input = string.lower(read());
 
-if Input == "sleep"{;
-if sleepcount >= 15{;
-cmd.sleep();
-sleepcount = 0;
-else;
-pr(C.red--'You arent tired you cant sleep!'--C.none);
-end;
-end;
+function main(){;
+input = read();
 
-if Input == "work"{;
-work.work();
-end;
 
-if Input == "eat"{;
-food.eat();
-end;
+if input == 'work'{;
+money = money +5;
+wi('you worked $$: for 5 dollars');
+};
+$$:
 
-if Input == "cook"{;
-food.cook();
-end;
 
-if Input == "list_food"{;
-food.list();
-end;
 
-if Input == "fight"{;
-fight.flight();
-end;
-
-if Input == 'pay_rent'{;
-if Money>50{;
-Mordayleft = Mordayleft + MorDays;
-pr(C.green--'Paid Rent');
-pr('Good for another '--Mordayleft--' Cycles!'--C.none);
-pr(C.red--'You paid 50 dollars'--C.none);
-Money = Money - 50;
-else;
-pr(C.red--"Not Enough Money!"--C.none);
-end;
-end;
-
-if Input == "buy_food"{;
-buy.food();
-end;
-
-if Input == "exit"{;
-pr("exiting!");
-os.exit();
-end;
-
-Cycles = Cycles + 1;
-
-if Mordayleft>0{; Mordayleft = Mordayleft - 1 end;
-
-if Cycles % 60 == 0{;
-pr(C.red--'You paid your taxes!');
-if Money-50 > 15 then temp = math.random(15,Money-50) else temp = 5 end;
-if House == false then temp = temp/2 end;
-Taxesammount = Taxesammount +temp;
-pr('You Paid '--temp--' Dollars'--C.none);
-Money = Money - temp;
-end;
-
-if Money < 0{;
-write('\n');
-pr(C.red--'Your In Debt!');
-pr('You Lose the game!'--C.none);
-pr('');
-cmd.info();
-os.exit();
-end;
-
-if Mordayleft==0{;
-if House == true{;
-House = false;
-pr(C.red--"You lost your house!");
-pr('Taxes Cut in half and ability to cook removed!');
-pr('Pay Your rent for 50 dollars!'--C.none);
-end;
-else;
-House = true;
-end;
-
-if Input == "info"{;
-cmd.info();
-end;
-
-temp = math.random(-123123123,123123);
-temp =os.time()+temp;
-math.randomseed(temp);
-sleepcount = sleepcount +1;
-MainLoop();
-end;
-MainLoop();
+main();
+};
+main();

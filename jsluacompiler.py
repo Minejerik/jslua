@@ -10,7 +10,7 @@ def find_files(filename, search_path):
 
 def loading(i):
 	porcent = i/len(datalist)*100
-	os.system('cls')
+	os.system('clear')
 	print (int(porcent),'Percent Done')
 
 filename = 'main.jslua' #input('Name of jslua file?\n')
@@ -112,12 +112,22 @@ def main():
 				temp = temp.replace(';', '')
 				temp = temp.replace('{', '')
 				toadd = toadd + temp + ' do \n'
+			elif '$$' in temp:
+				if not ':' in temp:
+					erro('Expected symbol ":"',temp, i)
+				toadd = toadd +'\n'
 			elif 'function' in temp:
 				if not ';' in temp:
 					erro('Expected symbol ";"',temp, i)
-				temp = temp.replace(';', '')
-				temp = temp.replace('{', ' ')
-				toadd = toadd + temp + '\n'
+				tempe = temp.replace(';','').replace('{','')
+				tempe = 'local '+tempe
+				toadd = toadd + tempe + '\n'
+				temp = temp.replace('{', ' ').replace('function ', '').replace(';', '')
+				templet = temp.find('(', 0, len(temp))
+				templet = temp[0:int(templet)]
+				var[len(var) + 1] = templet+'('
+				varup[len(varup) + 1] = templet.upper()+'('
+				printlater[i] = templet + " function indexed"
 			elif 'gbl' in temp:
 				if not ';' in temp:
 					erro('Expected symbol ";"',temp, i)
@@ -128,7 +138,7 @@ def main():
 				varup[len(varup) + 1] = templet.upper()
 				temp = temp.replace(';','')
 				toadd = toadd + temp + '\n'
-				print(templet + " variable indexed")
+				printlater[i] = templet + " variable indexed"
 			elif 'tbl' in temp:
 				if not ';' in temp:
 					erro('Expected symbol ";"',temp, i)
@@ -138,17 +148,17 @@ def main():
 				var[len(var) + 1] = templet
 				varup[len(varup) + 1] = templet.upper()
 				toadd = toadd + temp + '}\n'
-				print(templet + " variable indexed")
+				printlater[i] = templet + " table indexed"
 			elif 'import(' in temp:
 				if not ';' in temp:
 					erro('Expected symbol ";"',temp, i)
-				tempe = temp.replace('import(','').replace(')','').replace('"','').replace("'",'').replace(';','')
+				tempe = temp.replace('import(','').replace(')','').replace('"','').replace("'",'').replace(';','').replace('.','/')
 				tempe = tempe + '.jslua'
 				file = find_files(tempe,os.getcwd())
 				if file != []:
 					printlater[i] = 'Remember to compile '+tempe
 				if file == []:
-					printlater[i] = tempe+' not found at line '+str(i)
+					printlater[i] = tempe+' not found'
 				temp = temp.replace('import(','require(').replace(';','')
 				toadd = toadd + temp +'\n'
 			else:
@@ -173,9 +183,10 @@ def main():
 		print('Replacing ' + var[i] + ' with ' + varup[i])
 		toadd = toadd.replace(var[i], varup[i])
 	toadd = toadd.replace('[];','{}')
-	if len(printlater)>0:
-		for i in range(1,len(printlater)):
-			print(printlater[i])
+	#if len(printlater)>0:
+	#	for i in range(1,len(printlater)):
+	#		print(i)
+	#		print(printlater[i])
 	if usedsleep == True:
 		f.write(sleepscript)
 	f.write(toadd)
